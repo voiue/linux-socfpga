@@ -1,7 +1,6 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
 /*
  * kernfs.h - pseudo filesystem decoupled from vfs locking
- *
- * This file is released under the GPLv2.
  */
 
 #ifndef __LINUX_KERNFS_H
@@ -188,6 +187,7 @@ struct kernfs_root {
 
 	/* private fields, do not use outside kernfs proper */
 	struct idr		ino_idr;
+	u32			last_ino;
 	u32			next_generation;
 	struct kernfs_syscall_ops *syscall_ops;
 

@@ -1,13 +1,5 @@
+// SPDX-License-Identifier: GPL-2.0-only
 /* Copyright (c) 2016 Thomas Graf <tgraf@tgraf.ch>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU General Public
- * License as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
  */
 
 #include <linux/kernel.h>
@@ -96,11 +88,16 @@ static int bpf_lwt_input_reroute(struct sk_buff *skb)
 	int err = -EINVAL;
 
 	if (skb->protocol == htons(ETH_P_IP)) {
+		struct net_device *dev = skb_dst(skb)->dev;
 		struct iphdr *iph = ip_hdr(skb);
 
+		dev_hold(dev);
+		skb_dst_drop(skb);
 		err = ip_route_input_noref(skb, iph->daddr, iph->saddr,
-					   iph->tos, skb_dst(skb)->dev);
+					   iph->tos, dev);
+		dev_put(dev);
 	} else if (skb->protocol == htons(ETH_P_IPV6)) {
+		skb_dst_drop(skb);
 		err = ipv6_stub->ipv6_route_input(skb);
 	} else {
 		err = -EAFNOSUPPORT;

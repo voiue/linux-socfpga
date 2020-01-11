@@ -394,6 +394,15 @@ config EDAC_ALTERA
 	  Altera SOCs. This is the global enable for the
 	  various Altera peripherals.
 
+config EDAC_ALTERA_ARM64_WARM_RESET
+	bool "Altera ARM64 Peripheral Warm Reset"
+	depends on EDAC_ALTERA=y && ARM64
+	help
+	  Support for Warm Reset on peripheral FIFO double bit errors
+	  on SoCFPGA ARM64 platforms. Otherwise a peripheral FIFO DBE
+	  will cause a cold reset. SDRAM and OCRAM DBEs always cause
+	  a cold reset.
+
 config EDAC_ALTERA_SDRAM
 	bool "Altera SDRAM ECC"
 	depends on EDAC_ALTERA=y
@@ -460,6 +469,19 @@ config EDAC_ALTERA_SDMMC
 	  Support for error detection and correction on the
 	  Altera SDMMC FIFO Memory for Altera SoCs.
 
+config EDAC_SIFIVE
+	bool "Sifive platform EDAC driver"
+	depends on EDAC=y && RISCV
+	help
+	  Support for error detection and correction on the SiFive SoCs.
+
+config EDAC_ARMADA_XP
+	bool "Marvell Armada XP DDR and L2 Cache ECC"
+	depends on MACH_MVEBU_V7
+	help
+	  Support for error correction and detection on the Marvell Aramada XP
+	  DDR RAM and L2 cache controllers.
+
 config EDAC_SYNOPSYS
 	tristate "Synopsys DDR Memory Controller"
 	depends on ARCH_ZYNQ || ARCH_ZYNQMP
@@ -503,5 +525,12 @@ config EDAC_ASPEED
 
 	  First, ECC must be configured in the bootloader. Then, this driver
 	  will expose error counters via the EDAC kernel framework.
+
+config EDAC_BLUEFIELD
+	tristate "Mellanox BlueField Memory ECC"
+	depends on ARM64 && ((MELLANOX_PLATFORM && ACPI) || COMPILE_TEST)
+	help
+	  Support for error detection and correction on the
+	  Mellanox BlueField SoCs.
 
 endif # EDAC

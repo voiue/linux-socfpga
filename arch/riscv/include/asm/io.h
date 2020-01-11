@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
 /*
  * {read,write}{b,w,l,q} based on arch/arm64/include/asm/io.h
  *   which was based on arch/arm/include/io.h
@@ -5,15 +6,6 @@
  * Copyright (C) 1996-2000 Russell King
  * Copyright (C) 2012 ARM Ltd.
  * Copyright (C) 2014 Regents of the University of California
- *
- *   This program is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU General Public License
- *   as published by the Free Software Foundation, version 2.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
  */
 
 #ifndef _ASM_RISCV_IO_H
@@ -21,6 +13,7 @@
 
 #include <linux/types.h>
 #include <asm/mmiowb.h>
+#include <asm/pgtable.h>
 
 extern void __iomem *ioremap(phys_addr_t offset, unsigned long size);
 
@@ -168,6 +161,12 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
 #define readq(c)	({ u64 __v; __io_br(); __v = readq_cpu(c); __io_ar(__v); __v; })
 #define writeq(v,c)	({ __io_bw(); writeq_cpu((v),(c)); __io_aw(); })
 #endif
+
+/*
+ *  I/O port access constants.
+ */
+#define IO_SPACE_LIMIT		(PCI_IO_SIZE - 1)
+#define PCI_IOBASE		((void __iomem *)PCI_IO_START)
 
 /*
  * Emulation routines for the port-mapped IO space used by some PCI drivers.
